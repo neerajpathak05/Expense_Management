@@ -105,7 +105,7 @@ const Expense = () => {
 
       if (editingId) {
         await axios.put(
-          `${BASE_URL}/expense/update/${editingId}`,
+          `${BASE_URL}/api/expense/update/${editingId}`,
           form,
           {
             headers: {
@@ -148,7 +148,7 @@ const Expense = () => {
       const token = localStorage.getItem("token");
 
       await axios.delete(
-        `${BASE_URL}/expense/delete/${id}`,
+        `${BASE_URL}/api/expense/delete/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -174,7 +174,7 @@ const Expense = () => {
       const token = localStorage.getItem("token");
 
       const res = await axios.get(
-        `${BASE_URL}/expense/download`,
+        `${BASE_URL}/api/expense/download`,
         {
           responseType: "blob",
           headers: {
