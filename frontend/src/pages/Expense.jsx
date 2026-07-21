@@ -29,7 +29,7 @@ const Expense = () => {
       const token = localStorage.getItem("token");
 
       const res = await axios.get(
-        `${BASE_URL}/expense/get`,
+        `${BASE_URL}/api/expense/get`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
