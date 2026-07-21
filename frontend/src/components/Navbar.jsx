@@ -1,15 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ChevronDown, LogOut, User } from "lucide-react";
+import {
+  ChevronDown,
+  LogOut,
+  User,
+  Menu,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const BASE_URL = "https://expense-management-backend-inm4.onrender.com";
+const BASE_URL =
+  "https://expense-management-backend-inm4.onrender.com";
 
-const Navbar = ({ user: propUser, onLogout }) => {
+const Navbar = ({
+  user: propUser,
+  onLogout,
+  setSidebarOpen,
+}) => {
   const navigate = useNavigate();
   const menuRef = useRef(null);
 
   const [menuOpen, setMenuOpen] = useState(false);
+
   const [user, setUser] = useState(
     propUser || {
       name: "",
@@ -29,17 +40,23 @@ const Navbar = ({ user: propUser, onLogout }) => {
 
         if (!token) return;
 
-        const res = await axios.get(`${BASE_URL}/user/profile`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await axios.get(
+          `${BASE_URL}/api/user/profile`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         const profile = res.data.user || res.data;
 
         setUser(profile);
       } catch (err) {
-        console.log(err);
+        console.log(
+          "Profile Error:",
+          err.response?.data || err
+        );
       }
     };
 
@@ -74,14 +91,36 @@ const Navbar = ({ user: propUser, onLogout }) => {
   return (
     <header className="fixed top-0 left-0 right-0 h-16 bg-white shadow z-50">
 
-      <div className="max-w-full h-full flex justify-between items-center px-8">
+      <div className="h-full flex justify-between items-center px-4 sm:px-6 lg:px-8">
 
-        <h1
-          className="text-2xl font-bold text-teal-600 cursor-pointer"
-          onClick={() => navigate("/")}
-        >
-          Expense Tracker
-        </h1>
+        {/* LEFT SIDE */}
+
+        <div className="flex items-center gap-3">
+
+          {/* Mobile Menu Button */}
+
+          <button
+            onClick={() =>
+              setSidebarOpen?.((prev) => !prev)
+            }
+            className="lg:hidden p-2 rounded-lg hover:bg-gray-100"
+          >
+            <Menu size={24} />
+          </button>
+
+          {/* Logo */}
+
+          <h1
+            className="text-lg sm:text-2xl font-bold text-teal-600 cursor-pointer"
+            onClick={() => navigate("/")}
+          >
+            Expense Tracker
+          </h1>
+
+        </div>
+
+
+        {/* USER MENU */}
 
         <div
           className="relative"
@@ -89,15 +128,21 @@ const Navbar = ({ user: propUser, onLogout }) => {
         >
 
           <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="flex items-center gap-3"
+            onClick={() =>
+              setMenuOpen(!menuOpen)
+            }
+            className="flex items-center gap-2 sm:gap-3"
           >
 
-            <div className="w-10 h-10 rounded-full bg-teal-600 text-white flex justify-center items-center font-bold">
+            {/* Avatar */}
+
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-teal-600 text-white flex justify-center items-center font-bold">
               {user?.name
                 ? user.name[0].toUpperCase()
                 : "U"}
             </div>
+
+            {/* User Information */}
 
             <div className="hidden md:block text-left">
 
@@ -114,15 +159,20 @@ const Navbar = ({ user: propUser, onLogout }) => {
             <ChevronDown
               size={18}
               className={`transition ${
-                menuOpen ? "rotate-180" : ""
+                menuOpen
+                  ? "rotate-180"
+                  : ""
               }`}
             />
 
           </button>
 
+
+          {/* DROPDOWN */}
+
           {menuOpen && (
 
-            <div className="absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-lg border">
+            <div className="absolute right-0 mt-3 w-52 sm:w-56 bg-white rounded-xl shadow-lg border">
 
               <button
                 onClick={() => {
