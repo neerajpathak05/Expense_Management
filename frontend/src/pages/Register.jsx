@@ -29,9 +29,9 @@ const Register = () => {
       setLoading(true);
 
       const res = await axios.post(
-        `${BASE_URL}/user/register`,
-        form
-      );
+      `${BASE_URL}/api/user/register`,
+      form
+    );
 
       if (res.data.success) {
         alert("Registration Successful");

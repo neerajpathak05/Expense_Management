@@ -27,7 +27,7 @@ const Login = ({ setUser }) => {
   try {
     setLoading(true);
 
-    const res = await axios.post(`${BASE_URL}/user/login`, form);
+    const res = await axios.post(`${BASE_URL}/api/user/login`, form);
 
     console.log("LOGIN RESPONSE:", res.data);
 
