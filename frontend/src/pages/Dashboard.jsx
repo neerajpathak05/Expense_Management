@@ -35,11 +35,15 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await axios.get(`${BASE_URL}/dashboard`, {
+      
+    const res = await axios.get(
+      `${BASE_URL}/api/dashboard`,
+      {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
+      }
+    );
 
       if (res.data.success) {
         setDashboard(res.data.data);
