@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:4000/api";
+const BASE_URL = "https://expense-management-backend-inm4.onrender.com";
 
 export const getDashboardData = async () => {
   const token = localStorage.getItem("token");
