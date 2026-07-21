@@ -4,7 +4,8 @@ import IncomeStats from "../components/IncomeStats";
 import IncomeChart from "../components/IncomeChart";
 import IncomeTransactions from "../components/IncomeTransactions";
 
-const BASE_URL = "https://expense-management-backend-inm4.onrender.com";
+const BASE_URL =
+  "https://expense-management-backend-inm4.onrender.com";
 
 const Income = () => {
   const [income, setIncome] = useState([]);
@@ -19,6 +20,9 @@ const Income = () => {
     date: "",
   });
 
+  // =========================
+  // GET INCOME
+  // =========================
   useEffect(() => {
     getIncome();
   }, []);
@@ -42,10 +46,16 @@ const Income = () => {
         setIncome(res.data.income || []);
       }
     } catch (error) {
-      console.log("Income Error:", error.response?.data || error);
+      console.log(
+        "Income Error:",
+        error.response?.data || error
+      );
     }
   };
 
+  // =========================
+  // HANDLE CHANGE
+  // =========================
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -53,6 +63,9 @@ const Income = () => {
     });
   };
 
+  // =========================
+  // OPEN ADD MODAL
+  // =========================
   const openAddModal = () => {
     setEditingId(null);
 
@@ -66,13 +79,16 @@ const Income = () => {
     setShowModal(true);
   };
 
+  // =========================
+  // OPEN EDIT MODAL
+  // =========================
   const openEditModal = (item) => {
     setEditingId(item._id);
 
     setForm({
-      description: item.description,
-      amount: item.amount,
-      category: item.category,
+      description: item.description || "",
+      amount: item.amount || "",
+      category: item.category || "",
       date: item.date
         ? item.date.slice(0, 10)
         : "",
@@ -81,6 +97,9 @@ const Income = () => {
     setShowModal(true);
   };
 
+  // =========================
+  // SAVE / UPDATE INCOME
+  // =========================
   const saveIncome = async (e) => {
     e.preventDefault();
 
@@ -89,7 +108,7 @@ const Income = () => {
 
       if (editingId) {
         await axios.put(
-          `${BASE_URL}/api/income/update/${editingId}`,
+          `${BASE_URL}/income/update/${editingId}`,
           form,
           {
             headers: {
@@ -99,7 +118,7 @@ const Income = () => {
         );
       } else {
         await axios.post(
-          `${BASE_URL}/api/income/add`,
+          `${BASE_URL}/income/add`,
           form,
           {
             headers: {
@@ -112,6 +131,13 @@ const Income = () => {
       setShowModal(false);
       setEditingId(null);
 
+      setForm({
+        description: "",
+        amount: "",
+        category: "",
+        date: "",
+      });
+
       await getIncome();
 
     } catch (error) {
@@ -122,6 +148,9 @@ const Income = () => {
     }
   };
 
+  // =========================
+  // DELETE INCOME
+  // =========================
   const deleteIncome = async (id) => {
     if (!window.confirm("Delete Income?")) return;
 
@@ -129,7 +158,7 @@ const Income = () => {
       const token = localStorage.getItem("token");
 
       await axios.delete(
-        `${BASE_URL}/api/income/delete/${id}`,
+        `${BASE_URL}/income/delete/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -147,12 +176,15 @@ const Income = () => {
     }
   };
 
+  // =========================
+  // DOWNLOAD EXCEL
+  // =========================
   const downloadExcel = async () => {
     try {
       const token = localStorage.getItem("token");
 
       const res = await axios.get(
-        `${BASE_URL}/api/income/download`,
+        `${BASE_URL}/income/download`,
         {
           responseType: "blob",
           headers: {
@@ -171,9 +203,11 @@ const Income = () => {
       link.download = "Income.xlsx";
 
       document.body.appendChild(link);
+
       link.click();
 
       link.remove();
+
       window.URL.revokeObjectURL(url);
 
     } catch (error) {
@@ -184,6 +218,9 @@ const Income = () => {
     }
   };
 
+  // =========================
+  // SEARCH
+  // =========================
   const filteredIncome = income.filter((item) =>
     item.description
       ?.toLowerCase()
@@ -191,48 +228,65 @@ const Income = () => {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="w-full max-w-full space-y-6 overflow-hidden">
 
-      {/* HEADER */}
-      <div className="flex justify-between items-start">
+      {/* =========================
+          HEADER
+      ========================= */}
 
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">
+      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-5">
+
+        {/* TITLE */}
+
+        <div className="min-w-0">
+
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
             Income Overview
           </h1>
 
-          <p className="text-gray-500 mt-1">
+          <p className="text-gray-500 mt-1 text-sm sm:text-base">
             Track and manage your income sources
           </p>
 
-          <div className="flex gap-2 mt-5">
+          {/* FILTER BUTTONS */}
 
-            {["Daily", "Weekly", "Monthly", "Yearly"].map(
-              (filter) => (
-                <button
-                  key={filter}
-                  className="px-5 py-2 border border-gray-400 rounded-lg hover:bg-teal-50"
-                >
-                  {filter}
-                </button>
-              )
-            )}
+          <div className="flex gap-2 mt-5 overflow-x-auto pb-1">
+
+            {[
+              "Daily",
+              "Weekly",
+              "Monthly",
+              "Yearly",
+            ].map((filter) => (
+
+              <button
+                key={filter}
+                className="shrink-0 px-4 sm:px-5 py-2 border border-gray-400 rounded-lg hover:bg-teal-50 text-sm sm:text-base"
+              >
+                {filter}
+              </button>
+
+            ))}
 
           </div>
+
         </div>
 
-        <div className="flex gap-3">
+
+        {/* ACTION BUTTONS */}
+
+        <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
 
           <button
             onClick={downloadExcel}
-            className="bg-green-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-700"
+            className="w-full sm:w-auto bg-green-600 text-white px-5 sm:px-6 py-3 rounded-xl font-semibold hover:bg-green-700 transition"
           >
             Download
           </button>
 
           <button
             onClick={openAddModal}
-            className="bg-teal-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-teal-700"
+            className="w-full sm:w-auto bg-teal-600 text-white px-5 sm:px-6 py-3 rounded-xl font-semibold hover:bg-teal-700 transition"
           >
             + Add Income
           </button>
@@ -242,31 +296,43 @@ const Income = () => {
       </div>
 
 
-      {/* STATS */}
+      {/* =========================
+          STATS
+      ========================= */}
 
-      <IncomeStats income={income} />
+      <div className="w-full overflow-hidden">
+        <IncomeStats income={income} />
+      </div>
 
 
-      {/* CHART */}
+      {/* =========================
+          CHART
+      ========================= */}
 
-      <div className="bg-white rounded-xl shadow p-6">
+      <div className="bg-white rounded-xl shadow p-4 sm:p-6 w-full overflow-hidden">
 
-        <h2 className="text-xl font-bold mb-5">
+        <h2 className="text-lg sm:text-xl font-bold mb-5">
           Income Trends
         </h2>
 
-        <IncomeChart income={income} />
+        <div className="w-full overflow-hidden">
+          <IncomeChart income={income} />
+        </div>
 
       </div>
 
 
-      {/* TRANSACTIONS */}
+      {/* =========================
+          TRANSACTIONS
+      ========================= */}
 
-      <div className="bg-white rounded-xl shadow p-6">
+      <div className="bg-white rounded-xl shadow p-4 sm:p-6 w-full overflow-hidden">
 
-        <div className="flex justify-between items-center mb-5">
+        {/* TRANSACTION HEADER */}
 
-          <h2 className="text-xl font-bold">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-5">
+
+          <h2 className="text-lg sm:text-xl font-bold">
             Income Transactions
           </h2>
 
@@ -277,38 +343,52 @@ const Income = () => {
             onChange={(e) =>
               setSearch(e.target.value)
             }
-            className="border rounded-lg px-4 py-2"
+            className="border rounded-lg px-4 py-2 w-full sm:w-64 outline-none focus:border-teal-500"
           />
 
         </div>
 
-        <IncomeTransactions
-          income={filteredIncome}
-          onEdit={openEditModal}
-          onDelete={deleteIncome}
-        />
+
+        {/* TABLE */}
+
+        <div className="w-full overflow-x-auto">
+
+          <IncomeTransactions
+            income={filteredIncome}
+            onEdit={openEditModal}
+            onDelete={deleteIncome}
+          />
+
+        </div>
 
       </div>
 
 
-      {/* MODAL */}
+      {/* =========================
+          ADD / EDIT MODAL
+      ========================= */}
 
       {showModal && (
 
-        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-100 p-4">
 
-          <div className="bg-white rounded-xl w-105 p-6">
+          <div className="bg-white rounded-xl w-full max-w-md p-5 sm:p-6 max-h-[90vh] overflow-y-auto">
 
-            <h2 className="text-2xl font-bold mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold mb-6">
+
               {editingId
                 ? "Update Income"
                 : "Add Income"}
+
             </h2>
+
 
             <form
               onSubmit={saveIncome}
               className="space-y-4"
             >
+
+              {/* DESCRIPTION */}
 
               <input
                 type="text"
@@ -317,8 +397,11 @@ const Income = () => {
                 value={form.description}
                 onChange={handleChange}
                 required
-                className="w-full border rounded-lg p-3"
+                className="w-full border rounded-lg p-3 outline-none focus:border-teal-500"
               />
+
+
+              {/* AMOUNT */}
 
               <input
                 type="number"
@@ -327,8 +410,11 @@ const Income = () => {
                 value={form.amount}
                 onChange={handleChange}
                 required
-                className="w-full border rounded-lg p-3"
+                className="w-full border rounded-lg p-3 outline-none focus:border-teal-500"
               />
+
+
+              {/* CATEGORY */}
 
               <input
                 type="text"
@@ -337,8 +423,11 @@ const Income = () => {
                 value={form.category}
                 onChange={handleChange}
                 required
-                className="w-full border rounded-lg p-3"
+                className="w-full border rounded-lg p-3 outline-none focus:border-teal-500"
               />
+
+
+              {/* DATE */}
 
               <input
                 type="date"
@@ -346,24 +435,28 @@ const Income = () => {
                 value={form.date}
                 onChange={handleChange}
                 required
-                className="w-full border rounded-lg p-3"
+                className="w-full border rounded-lg p-3 outline-none focus:border-teal-500"
               />
 
-              <div className="flex justify-end gap-3">
+
+              {/* BUTTONS */}
+
+              <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2">
 
                 <button
                   type="button"
                   onClick={() =>
                     setShowModal(false)
                   }
-                  className="bg-gray-300 px-5 py-2 rounded-lg"
+                  className="w-full sm:w-auto bg-gray-300 px-5 py-2 rounded-lg hover:bg-gray-400"
                 >
                   Cancel
                 </button>
 
+
                 <button
                   type="submit"
-                  className="bg-teal-600 text-white px-5 py-2 rounded-lg"
+                  className="w-full sm:w-auto bg-teal-600 text-white px-5 py-2 rounded-lg hover:bg-teal-700"
                 >
                   {editingId
                     ? "Update"
