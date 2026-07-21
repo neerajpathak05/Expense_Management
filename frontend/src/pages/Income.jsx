@@ -108,7 +108,7 @@ const Income = () => {
 
       if (editingId) {
         await axios.put(
-          `${BASE_URL}/income/update/${editingId}`,
+          `${BASE_URL}/api/income/update/${editingId}`,
           form,
           {
             headers: {
@@ -118,7 +118,7 @@ const Income = () => {
         );
       } else {
         await axios.post(
-          `${BASE_URL}/income/add`,
+          `${BASE_URL}/api/income/add`,
           form,
           {
             headers: {
@@ -158,7 +158,7 @@ const Income = () => {
       const token = localStorage.getItem("token");
 
       await axios.delete(
-        `${BASE_URL}/income/delete/${id}`,
+        `${BASE_URL}/api/income/delete/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -184,7 +184,7 @@ const Income = () => {
       const token = localStorage.getItem("token");
 
       const res = await axios.get(
-        `${BASE_URL}/income/download`,
+        `${BASE_URL}/api/income/download`,
         {
           responseType: "blob",
           headers: {

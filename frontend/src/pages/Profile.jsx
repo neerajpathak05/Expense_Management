@@ -49,7 +49,7 @@ const Profile = () => {
       }
 
       const res = await axios.put(
-        `${BASE_URL}/user/update-profile`,
+        `${BASE_URL}/api/user/update-profile`,
         body,
         {
           headers: {
