@@ -34,16 +34,21 @@ const SpendingCategory = ({ data = [] }) => {
             width="100%"
             height="100%"
           >
+
             <PieChart>
 
               <Pie
                 data={data}
                 dataKey="amount"
                 nameKey="category"
+                cx="50%"
+                cy="45%"
                 outerRadius="65%"
-                label
+                label={false}
               >
+
                 {data.map((entry, index) => (
+
                   <Cell
                     key={`cell-${index}`}
                     fill={
@@ -52,25 +57,38 @@ const SpendingCategory = ({ data = [] }) => {
                       ]
                     }
                   />
+
                 ))}
+
               </Pie>
 
-              <Tooltip />
+
+              <Tooltip
+                formatter={(value) => [
+                  `₹ ${Number(value).toLocaleString()}`,
+                  "Amount",
+                ]}
+              />
+
 
               <Legend
+                verticalAlign="bottom"
+                align="center"
                 wrapperStyle={{
                   fontSize: "12px",
+                  paddingTop: "10px",
                 }}
               />
 
             </PieChart>
+
           </ResponsiveContainer>
 
         </div>
 
       ) : (
 
-        <div className="flex justify-center items-center h-64 sm:h-72 text-gray-400">
+        <div className="flex justify-center items-center h-64 text-gray-400">
           No Expense Data
         </div>
 
