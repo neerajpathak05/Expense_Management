@@ -18,40 +18,64 @@ const COLORS = [
   "#10b981",
 ];
 
-const SpendingCategory = ({ data }) => {
+const SpendingCategory = ({ data = [] }) => {
   return (
-    <div className="bg-white rounded-xl shadow p-6 h-95">
-      <h2 className="text-xl font-semibold mb-5">
+    <div className="bg-white rounded-xl shadow p-4 sm:p-6 w-full min-w-0">
+
+      <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-5">
         Spending by Category
       </h2>
 
-      {data?.length > 0 ? (
-        <ResponsiveContainer width="100%" height="90%">
-          <PieChart>
-            <Pie
-              data={data}
-              dataKey="amount"
-              nameKey="category"
-              outerRadius={100}
-              label
-            >
-              {data.map((entry, index) => (
-                <Cell
-                  key={index}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
+      {data.length > 0 ? (
 
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
+        <div className="w-full h-80 sm:h-95">
+
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
+          >
+            <PieChart>
+
+              <Pie
+                data={data}
+                dataKey="amount"
+                nameKey="category"
+                outerRadius="65%"
+                label
+              >
+                {data.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={
+                      COLORS[
+                        index % COLORS.length
+                      ]
+                    }
+                  />
+                ))}
+              </Pie>
+
+              <Tooltip />
+
+              <Legend
+                wrapperStyle={{
+                  fontSize: "12px",
+                }}
+              />
+
+            </PieChart>
+          </ResponsiveContainer>
+
+        </div>
+
       ) : (
-        <div className="flex justify-center items-center h-62.5 text-gray-400">
+
+        <div className="flex justify-center items-center h-64 sm:h-72 text-gray-400">
           No Expense Data
         </div>
+
       )}
+
     </div>
   );
 };

@@ -6,37 +6,38 @@ const ExpenseTransactions = ({
   onDelete,
 }) => {
   return (
-    <div className="overflow-x-auto">
+    <div className="w-full overflow-x-auto">
 
-      <table className="min-w-full">
+      <table className="min-w-175 w-full">
 
         <thead className="bg-gray-100">
 
           <tr>
 
-            <th className="px-6 py-3 text-left">
+            <th className="px-4 sm:px-6 py-3 text-left text-sm font-semibold whitespace-nowrap">
               Description
             </th>
 
-            <th className="px-6 py-3 text-left">
+            <th className="px-4 sm:px-6 py-3 text-left text-sm font-semibold whitespace-nowrap">
               Category
             </th>
 
-            <th className="px-6 py-3 text-left">
+            <th className="px-4 sm:px-6 py-3 text-left text-sm font-semibold whitespace-nowrap">
               Amount
             </th>
 
-            <th className="px-6 py-3 text-left">
+            <th className="px-4 sm:px-6 py-3 text-left text-sm font-semibold whitespace-nowrap">
               Date
             </th>
 
-            <th className="px-6 py-3 text-center">
+            <th className="px-4 sm:px-6 py-3 text-center text-sm font-semibold whitespace-nowrap">
               Action
             </th>
 
           </tr>
 
         </thead>
+
 
         <tbody>
 
@@ -49,40 +50,51 @@ const ExpenseTransactions = ({
                 className="border-t hover:bg-gray-50"
               >
 
-                <td className="px-6 py-4">
+                <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                   {item.description}
                 </td>
 
-                <td className="px-6 py-4">
-                  {item.category}
+
+                <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+
+                  <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs">
+                    {item.category}
+                  </span>
+
                 </td>
 
-                <td className="px-6 py-4 font-semibold text-red-600">
+
+                <td className="px-4 sm:px-6 py-3 sm:py-4 font-semibold text-red-600 whitespace-nowrap">
                   ₹ {Number(item.amount).toLocaleString()}
                 </td>
 
-                <td className="px-6 py-4">
+
+                <td className="px-4 sm:px-6 py-3 sm:py-4 text-gray-600 whitespace-nowrap">
                   {new Date(
                     item.date
                   ).toLocaleDateString()}
                 </td>
 
-                <td className="px-6 py-4">
 
-                  <div className="flex justify-center gap-3">
+                <td className="px-4 sm:px-6 py-3 sm:py-4">
+
+                  <div className="flex justify-center gap-2">
 
                     <button
-                      onClick={() => onEdit(item)}
-                      className="bg-blue-500 text-white px-4 py-2 rounded"
+                      onClick={() =>
+                        onEdit(item)
+                      }
+                      className="bg-blue-500 text-white px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm hover:bg-blue-600 whitespace-nowrap"
                     >
                       Edit
                     </button>
+
 
                     <button
                       onClick={() =>
                         onDelete(item._id)
                       }
-                      className="bg-red-500 text-white px-4 py-2 rounded"
+                      className="bg-red-500 text-white px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm hover:bg-red-600 whitespace-nowrap"
                     >
                       Delete
                     </button>
