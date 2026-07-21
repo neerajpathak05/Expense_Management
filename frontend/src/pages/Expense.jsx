@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const BASE_URL = "https://expense-management-backend-inm4.onrender.com";
+const BASE_URL =
+  "https://expense-management-backend-inm4.onrender.com";
 
 const Expense = () => {
   const [expense, setExpense] = useState([]);
@@ -18,7 +19,7 @@ const Expense = () => {
   const [search, setSearch] = useState("");
 
   // =========================
-  // Get Expense
+  // GET EXPENSE
   // =========================
   useEffect(() => {
     getExpense();
@@ -51,7 +52,7 @@ const Expense = () => {
   };
 
   // =========================
-  // Handle Change
+  // HANDLE CHANGE
   // =========================
   const handleChange = (e) => {
     setForm({
@@ -61,7 +62,7 @@ const Expense = () => {
   };
 
   // =========================
-  // Add Modal
+  // ADD MODAL
   // =========================
   const openAddModal = () => {
     setEditingId(null);
@@ -77,15 +78,15 @@ const Expense = () => {
   };
 
   // =========================
-  // Edit Modal
+  // EDIT MODAL
   // =========================
   const openEditModal = (item) => {
     setEditingId(item._id);
 
     setForm({
-      description: item.description,
-      amount: item.amount,
-      category: item.category,
+      description: item.description || "",
+      amount: item.amount || "",
+      category: item.category || "",
       date: item.date
         ? item.date.slice(0, 10)
         : "",
@@ -95,7 +96,7 @@ const Expense = () => {
   };
 
   // =========================
-  // Save / Update Expense
+  // SAVE / UPDATE EXPENSE
   // =========================
   const saveExpense = async (e) => {
     e.preventDefault();
@@ -105,7 +106,7 @@ const Expense = () => {
 
       if (editingId) {
         await axios.put(
-          `${BASE_URL}/api/expense/update/${editingId}`,
+          `${BASE_URL}/expense/update/${editingId}`,
           form,
           {
             headers: {
@@ -128,6 +129,13 @@ const Expense = () => {
       setShowModal(false);
       setEditingId(null);
 
+      setForm({
+        description: "",
+        amount: "",
+        category: "",
+        date: "",
+      });
+
       await getExpense();
 
     } catch (err) {
@@ -139,7 +147,7 @@ const Expense = () => {
   };
 
   // =========================
-  // Delete Expense
+  // DELETE EXPENSE
   // =========================
   const deleteExpense = async (id) => {
     if (!window.confirm("Delete Expense?")) return;
@@ -148,7 +156,7 @@ const Expense = () => {
       const token = localStorage.getItem("token");
 
       await axios.delete(
-        `${BASE_URL}/api/expense/delete/${id}`,
+        `${BASE_URL}/expense/delete/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -167,14 +175,14 @@ const Expense = () => {
   };
 
   // =========================
-  // Download Excel
+  // DOWNLOAD EXCEL
   // =========================
   const downloadExcel = async () => {
     try {
       const token = localStorage.getItem("token");
 
       const res = await axios.get(
-        `${BASE_URL}/api/expense/download`,
+        `${BASE_URL}/expense/download`,
         {
           responseType: "blob",
           headers: {
@@ -209,7 +217,7 @@ const Expense = () => {
   };
 
   // =========================
-  // Search
+  // SEARCH
   // =========================
   const filteredExpense = expense.filter((item) =>
     item.description
@@ -218,7 +226,7 @@ const Expense = () => {
   );
 
   // =========================
-  // Total Expense
+  // TOTAL EXPENSE
   // =========================
   const totalExpense = expense.reduce(
     (total, item) =>
@@ -226,23 +234,46 @@ const Expense = () => {
     0
   );
 
+  // =========================
+  // CATEGORY DATA
+  // =========================
+  const categoryData = Object.entries(
+    expense.reduce((acc, item) => {
+      const category =
+        item.category || "Other";
+
+      acc[category] =
+        (acc[category] || 0) +
+        Number(item.amount || 0);
+
+      return acc;
+    }, {})
+  );
+
   return (
-    <div className="space-y-6">
+    <div className="w-full max-w-full space-y-6 overflow-hidden">
 
-      {/* HEADER */}
+      {/* =========================
+          HEADER
+      ========================= */}
 
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-5">
 
-        <div>
-          <h1 className="text-3xl font-bold">
+        {/* TITLE */}
+
+        <div className="min-w-0">
+
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
             Expense Overview
           </h1>
 
-          <p className="text-gray-500">
+          <p className="text-gray-500 mt-1 text-sm sm:text-base">
             Track and manage your expenses
           </p>
 
-          <div className="flex gap-2 mt-4">
+          {/* FILTER BUTTONS */}
+
+          <div className="flex gap-2 mt-5 overflow-x-auto pb-1">
 
             {[
               "Daily",
@@ -250,29 +281,35 @@ const Expense = () => {
               "Monthly",
               "Yearly",
             ].map((filter) => (
+
               <button
                 key={filter}
-                className="px-4 py-2 rounded-lg border text-sm hover:bg-red-50"
+                className="shrink-0 px-4 sm:px-5 py-2 rounded-lg border border-gray-400 text-sm sm:text-base hover:bg-red-50"
               >
                 {filter}
               </button>
+
             ))}
 
           </div>
+
         </div>
 
-        <div className="flex gap-3">
+
+        {/* ACTION BUTTONS */}
+
+        <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
 
           <button
             onClick={downloadExcel}
-            className="bg-green-600 text-white px-5 py-2 rounded-lg"
+            className="w-full sm:w-auto bg-green-600 text-white px-5 sm:px-6 py-3 rounded-xl font-semibold hover:bg-green-700 transition"
           >
             Download
           </button>
 
           <button
             onClick={openAddModal}
-            className="bg-red-600 text-white px-5 py-2 rounded-lg"
+            className="w-full sm:w-auto bg-red-600 text-white px-5 sm:px-6 py-3 rounded-xl font-semibold hover:bg-red-700 transition"
           >
             + Add Expense
           </button>
@@ -282,36 +319,45 @@ const Expense = () => {
       </div>
 
 
-      {/* STATS */}
+      {/* =========================
+          STATS
+      ========================= */}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
 
-        <div className="bg-white rounded-xl shadow p-6">
+        <div className="bg-white rounded-xl shadow p-5 sm:p-6">
+
           <p className="text-gray-500">
             Total Expense
           </p>
 
-          <h2 className="text-3xl font-bold text-red-600 mt-2">
+          <h2 className="text-2xl sm:text-3xl font-bold text-red-600 mt-2">
             ₹ {totalExpense.toLocaleString()}
           </h2>
+
         </div>
 
-        <div className="bg-white rounded-xl shadow p-6">
+
+        <div className="bg-white rounded-xl shadow p-5 sm:p-6">
+
           <p className="text-gray-500">
             Transactions
           </p>
 
-          <h2 className="text-3xl font-bold mt-2">
+          <h2 className="text-2xl sm:text-3xl font-bold mt-2">
             {expense.length}
           </h2>
+
         </div>
 
-        <div className="bg-white rounded-xl shadow p-6">
+
+        <div className="bg-white rounded-xl shadow p-5 sm:p-6 sm:col-span-2 lg:col-span-1">
+
           <p className="text-gray-500">
             Average Expense
           </p>
 
-          <h2 className="text-3xl font-bold text-orange-600 mt-2">
+          <h2 className="text-2xl sm:text-3xl font-bold text-orange-600 mt-2">
             ₹{" "}
             {expense.length > 0
               ? (
@@ -320,20 +366,23 @@ const Expense = () => {
                 ).toFixed(2)
               : 0}
           </h2>
+
         </div>
 
       </div>
 
 
-      {/* SPENDING BY CATEGORY */}
+      {/* =========================
+          SPENDING BY CATEGORY
+      ========================= */}
 
-      <div className="bg-white rounded-xl shadow p-6">
+      <div className="bg-white rounded-xl shadow p-5 sm:p-6 w-full overflow-hidden">
 
-        <h2 className="text-xl font-bold mb-6">
+        <h2 className="text-lg sm:text-xl font-bold mb-6">
           Spending by Category
         </h2>
 
-        {expense.length === 0 ? (
+        {categoryData.length === 0 ? (
 
           <p className="text-center text-gray-500 py-8">
             No expense data available
@@ -341,33 +390,20 @@ const Expense = () => {
 
         ) : (
 
-          <div className="space-y-4">
+          <div className="space-y-5">
 
-            {Object.entries(
-              expense.reduce((acc, item) => {
-
-                const category =
-                  item.category || "Other";
-
-                acc[category] =
-                  (acc[category] || 0) +
-                  Number(item.amount || 0);
-
-                return acc;
-
-              }, {})
-            ).map(
+            {categoryData.map(
               ([category, amount]) => (
 
                 <div key={category}>
 
-                  <div className="flex justify-between mb-2">
+                  <div className="flex justify-between items-center gap-4 mb-2">
 
-                    <span className="font-medium">
+                    <span className="font-medium truncate">
                       {category}
                     </span>
 
-                    <span className="font-semibold text-red-600">
+                    <span className="font-semibold text-red-600 whitespace-nowrap">
                       ₹ {amount.toLocaleString()}
                     </span>
 
@@ -378,12 +414,16 @@ const Expense = () => {
                     <div
                       className="bg-red-500 h-3 rounded-full"
                       style={{
-                        width: `${Math.min(
-                          (amount /
-                            totalExpense) *
-                            100,
-                          100
-                        )}%`,
+                        width: `${
+                          totalExpense > 0
+                            ? Math.min(
+                                (amount /
+                                  totalExpense) *
+                                  100,
+                                100
+                              )
+                            : 0
+                        }%`,
                       }}
                     />
 
@@ -401,13 +441,17 @@ const Expense = () => {
       </div>
 
 
-      {/* TRANSACTIONS */}
+      {/* =========================
+          TRANSACTIONS
+      ========================= */}
 
       <div className="bg-white rounded-xl shadow overflow-hidden">
 
-        <div className="p-6 flex justify-between items-center">
+        {/* TRANSACTION HEADER */}
 
-          <h2 className="text-xl font-bold">
+        <div className="p-4 sm:p-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+
+          <h2 className="text-lg sm:text-xl font-bold">
             Expense Transactions
           </h2>
 
@@ -418,37 +462,39 @@ const Expense = () => {
             onChange={(e) =>
               setSearch(e.target.value)
             }
-            className="border rounded-lg p-3"
+            className="border rounded-lg p-3 w-full sm:w-64 outline-none focus:border-red-500"
           />
 
         </div>
 
 
-        <div className="overflow-x-auto">
+        {/* RESPONSIVE TABLE */}
 
-          <table className="min-w-full">
+        <div className="overflow-x-auto w-full">
+
+          <table className="min-w-175 w-full">
 
             <thead className="bg-gray-100">
 
               <tr>
 
-                <th className="px-6 py-3 text-left">
+                <th className="px-4 sm:px-6 py-3 text-left">
                   Description
                 </th>
 
-                <th className="px-6 py-3 text-left">
+                <th className="px-4 sm:px-6 py-3 text-left">
                   Category
                 </th>
 
-                <th className="px-6 py-3 text-left">
+                <th className="px-4 sm:px-6 py-3 text-left">
                   Amount
                 </th>
 
-                <th className="px-6 py-3 text-left">
+                <th className="px-4 sm:px-6 py-3 text-left">
                   Date
                 </th>
 
-                <th className="px-6 py-3 text-center">
+                <th className="px-4 sm:px-6 py-3 text-center">
                   Action
                 </th>
 
@@ -468,33 +514,36 @@ const Expense = () => {
                     className="border-t hover:bg-gray-50"
                   >
 
-                    <td className="px-6 py-4">
+                    <td className="px-4 sm:px-6 py-4">
                       {item.description}
                     </td>
 
-                    <td className="px-6 py-4">
+                    <td className="px-4 sm:px-6 py-4">
                       {item.category}
                     </td>
 
-                    <td className="px-6 py-4 font-semibold text-red-600">
-                      ₹ {item.amount}
+                    <td className="px-4 sm:px-6 py-4 font-semibold text-red-600">
+                      ₹{" "}
+                      {Number(
+                        item.amount
+                      ).toLocaleString()}
                     </td>
 
-                    <td className="px-6 py-4">
+                    <td className="px-4 sm:px-6 py-4">
                       {new Date(
                         item.date
                       ).toLocaleDateString()}
                     </td>
 
-                    <td className="px-6 py-4">
+                    <td className="px-4 sm:px-6 py-4">
 
-                      <div className="flex justify-center gap-3">
+                      <div className="flex justify-center gap-2">
 
                         <button
                           onClick={() =>
                             openEditModal(item)
                           }
-                          className="bg-blue-500 text-white px-4 py-2 rounded"
+                          className="bg-blue-500 text-white px-3 sm:px-4 py-2 rounded text-sm hover:bg-blue-600"
                         >
                           Edit
                         </button>
@@ -503,7 +552,7 @@ const Expense = () => {
                           onClick={() =>
                             deleteExpense(item._id)
                           }
-                          className="bg-red-500 text-white px-4 py-2 rounded"
+                          className="bg-red-500 text-white px-3 sm:px-4 py-2 rounded text-sm hover:bg-red-600"
                         >
                           Delete
                         </button>
@@ -540,15 +589,17 @@ const Expense = () => {
       </div>
 
 
-      {/* ADD / EDIT MODAL */}
+      {/* =========================
+          ADD / EDIT MODAL
+      ========================= */}
 
       {showModal && (
 
-        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-100 p-4">
 
-          <div className="bg-white rounded-xl w-105 p-6">
+          <div className="bg-white rounded-xl w-full max-w-md p-5 sm:p-6 max-h-[90vh] overflow-y-auto">
 
-            <h2 className="text-2xl font-bold mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold mb-6">
 
               {editingId
                 ? "Update Expense"
@@ -562,6 +613,8 @@ const Expense = () => {
               className="space-y-4"
             >
 
+              {/* DESCRIPTION */}
+
               <input
                 type="text"
                 name="description"
@@ -569,9 +622,11 @@ const Expense = () => {
                 value={form.description}
                 onChange={handleChange}
                 required
-                className="w-full border rounded-lg p-3"
+                className="w-full border rounded-lg p-3 outline-none focus:border-red-500"
               />
 
+
+              {/* AMOUNT */}
 
               <input
                 type="number"
@@ -580,9 +635,11 @@ const Expense = () => {
                 value={form.amount}
                 onChange={handleChange}
                 required
-                className="w-full border rounded-lg p-3"
+                className="w-full border rounded-lg p-3 outline-none focus:border-red-500"
               />
 
+
+              {/* CATEGORY */}
 
               <input
                 type="text"
@@ -591,9 +648,11 @@ const Expense = () => {
                 value={form.category}
                 onChange={handleChange}
                 required
-                className="w-full border rounded-lg p-3"
+                className="w-full border rounded-lg p-3 outline-none focus:border-red-500"
               />
 
+
+              {/* DATE */}
 
               <input
                 type="date"
@@ -601,18 +660,20 @@ const Expense = () => {
                 value={form.date}
                 onChange={handleChange}
                 required
-                className="w-full border rounded-lg p-3"
+                className="w-full border rounded-lg p-3 outline-none focus:border-red-500"
               />
 
 
-              <div className="flex justify-end gap-3 pt-2">
+              {/* BUTTONS */}
+
+              <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2">
 
                 <button
                   type="button"
                   onClick={() =>
                     setShowModal(false)
                   }
-                  className="bg-gray-300 px-5 py-2 rounded-lg"
+                  className="w-full sm:w-auto bg-gray-300 px-5 py-2 rounded-lg hover:bg-gray-400"
                 >
                   Cancel
                 </button>
@@ -620,7 +681,7 @@ const Expense = () => {
 
                 <button
                   type="submit"
-                  className="bg-red-600 text-white px-5 py-2 rounded-lg"
+                  className="w-full sm:w-auto bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700"
                 >
                   {editingId
                     ? "Update"
