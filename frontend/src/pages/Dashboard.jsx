@@ -13,7 +13,7 @@ import FinancialOverview from "../components/FinancialOverview";
 import RecentTransactions from "../components/RecentTransactions";
 import SpendingCategory from "../components/SpendingCategory";
 
-const BASE_URL = "http://localhost:4000/api";
+const BASE_URL = "https://expense-management-backend-inm4.onrender.com";
 
 const Dashboard = () => {
   const [dashboard, setDashboard] = useState({

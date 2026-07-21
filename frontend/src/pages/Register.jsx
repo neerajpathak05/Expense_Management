@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
-const BASE_URL = "http://localhost:4000/api";
+const BASE_URL = "https://expense-management-backend-inm4.onrender.com";
 
 const Register = () => {
   const navigate = useNavigate();

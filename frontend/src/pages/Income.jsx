@@ -4,7 +4,7 @@ import IncomeStats from "../components/IncomeStats";
 import IncomeChart from "../components/IncomeChart";
 import IncomeTransactions from "../components/IncomeTransactions";
 
-const BASE_URL = "http://localhost:4000/api";
+const BASE_URL = "https://expense-management-backend-inm4.onrender.com";
 
 const Income = () => {
   const [income, setIncome] = useState([]);
