@@ -25,58 +25,12 @@ A full-stack expense management application that helps users track income and ex
 
 * `frontend/` – React user interface and dashboard.
 * `backend/` – Express APIs, authentication, and database operations.
-
-*Adjust the folder names above to match your actual repository structure.*
-
-## Getting Started
-
+  
 ### Prerequisites
 
 * Node.js and npm
 * MongoDB database
 * Git
-
-### Installation
-
-1. Clone the repository:
-
-   ```bash
-   git clone YOUR_REPOSITORY_URL
-   ```
-
-2. Navigate to the frontend and install dependencies:
-
-   ```bash
-   cd frontend
-   npm install
-   ```
-
-3. Navigate to the backend and install dependencies:
-
-   ```bash
-   cd ../backend
-   npm install
-   ```
-
-4. Configure the required environment variables in the backend `.env` file:
-
-   ```env
-   PORT=5000
-   MONGO_URI=your_mongodb_connection_string
-   JWT_SECRET=your_secret_key
-   ```
-
-5. Start the backend:
-
-   ```bash
-   npm run dev
-   ```
-
-6. Start the frontend in a separate terminal using the appropriate frontend directory:
-
-   ```bash
-   npm run dev
-   ```
 
 ## Learning Outcomes
 
